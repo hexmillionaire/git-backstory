@@ -1,0 +1,20 @@
+{
+  "name": "git-brief",
+  "version": "0.1.0",
+  "description": "A history brief for one file, written for whoever has to change it next: reverts, fix bursts, reasons from commit bodies, co-changed files and owners, from git log and git blame. Zero dependencies.",
+  "type": "module",
+  "bin": { "git-brief": "bin/git-brief.js" },
+  "files": ["bin", "src", "README.md", "LICENSE", "llms.txt", "skills"],
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "test": "node --test test/analyze.test.js test/cli.test.js",
+    "try": "node bin/git-brief.js src/cli.js"
+  },
+  "keywords": ["git", "git-log", "git-blame", "history", "code-archaeology", "ai-coding", "claude-code", "cursor", "codex", "copilot", "agents", "context-engineering", "cli", "developer-tools", "zero-dependencies"],
+  "author": "Amado (hexmillionaire)",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/hexmillionaire/git-brief.git" },
+  "homepage": "https://github.com/hexmillionaire/git-brief#readme",
+  "bugs": { "url": "https://github.com/hexmillionaire/git-brief/issues" },
+  "publishConfig": { "access": "public" }
+}

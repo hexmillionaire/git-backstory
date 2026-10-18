@@ -1,0 +1,27 @@
+# git-brief
+
+> Zero-dependency Node CLI that writes a one-page markdown history brief for a single file (or line range) from `git log` and `git blame`: reverts, fix bursts, constraints quoted from commit bodies, files that usually change together, line ownership and a short timeline. Built so coding agents stop re-making changes that were already reverted.
+
+Run in any git repo, no install: `npx -y git-brief <path>`. Node 18+ and git. Read-only: never writes to the repo, never uses the network, no API key.
+
+## Usage
+
+- `npx -y git-brief src/file.ts` — brief for a file (follows renames)
+- `npx -y git-brief src/file.ts:120-160` — brief for a line range
+- `npx -y git-brief src/file.ts --json` — the same facts as JSON
+- `--since <date>`, `--max <n>`, `--out <file>`, `--no-links`
+
+## When an agent should run it
+
+Before editing a file that has more than a handful of commits, or any file the task calls risky. Read "Be careful" (reverts, fixes, bursts) and "Usually changes together with" (coupling) first; if a revert is listed, open both commits before attempting a similar change.
+
+## Output sections
+
+Be careful · Reasons on record · Usually changes together with · Referenced issues and PRs · Who to ask · Timeline. Empty sections are omitted.
+
+## Docs
+
+- README: https://github.com/hexmillionaire/git-brief#readme
+- Agent skill: https://github.com/hexmillionaire/git-brief/blob/main/skills/git-brief/SKILL.md
+- Security: https://github.com/hexmillionaire/git-brief/blob/main/SECURITY.md
+- npm: https://www.npmjs.com/package/git-brief
