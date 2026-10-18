@@ -1,5 +1,5 @@
 import { resolve, relative, sep, isAbsolute } from "node:path";
-import { existsSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { analyze, renameTrail } from "./analyze.js";
 import { render } from "./render.js";
@@ -49,6 +49,19 @@ export function parseArgs(argv) {
 
 export class UsageError extends Error {}
 
+/** Real path of the deepest existing ancestor, with the missing tail re-attached. */
+function canonical(p) {
+  const missing = [];
+  let cur = p;
+  while (!existsSync(cur)) {
+    const parent = resolve(cur, "..");
+    if (parent === cur) return p;
+    missing.unshift(cur.slice(parent.length).replace(/^[\\/]/, ""));
+    cur = parent;
+  }
+  return resolve(realpathSync.native(cur), ...missing);
+}
+
 /** "src/a.ts:10-20" -> { file, range } ; Windows drive letters are left alone. */
 export function splitTarget(target) {
   const m = target.match(/^(.*?):(\d+)(?:-(\d+))?$/);
@@ -61,8 +74,10 @@ export function splitTarget(target) {
 
 export function brief(targetArg, opts, cwd = process.cwd()) {
   const { file: rawFile, range } = splitTarget(targetArg);
-  const abs = resolve(cwd, rawFile);
-  const root = repoRoot(existsSync(abs) && statSync(abs).isDirectory() ? abs : resolve(abs, ".."));
+  // Compare canonical paths: macOS puts temp dirs behind a /var -> /private/var
+  // symlink and Windows hands out 8.3 short names, while git reports real paths.
+  const abs = canonical(resolve(cwd, rawFile));
+  const root = canonical(repoRoot(existsSync(abs) && statSync(abs).isDirectory() ? abs : resolve(abs, "..")));
   let file = relative(root, abs).split(sep).join("/");
   if (!file || file.startsWith("..") || isAbsolute(file)) throw new UsageError(`${rawFile} is outside the repository at ${root}.`);
 

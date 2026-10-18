@@ -77,3 +77,17 @@ test("CLI: untracked path gives a readable brief, directory is refused", () => {
   assert.match(run(["does-not-exist.js"]), /No history for this path/);
   assert.equal(exitCode(["src"]), 2);
 });
+
+test("works when the temp dir is reached through a symlink (macOS /var -> /private/var)", async () => {
+  const { symlinkSync, mkdtempSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const linkRoot = mkdtempSync(join(tmpdir(), "git-brief-link-"));
+  const link = join(linkRoot, "repo");
+  try {
+    symlinkSync(dir, link, "dir");
+  } catch {
+    return; // no symlink permission (some Windows runners); nothing to test
+  }
+  const { facts } = brief("src/money/price.js", parseArgs(["x"]), link);
+  assert.equal(facts.commitCount, 8);
+});
