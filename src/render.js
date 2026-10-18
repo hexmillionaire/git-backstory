@@ -18,8 +18,9 @@ export function render(a, { webUrl = null, range = null, previousPaths = [] } = 
   // Summary line.
   const parts = [];
   parts.push(`${a.commitCount} commit${a.commitCount === 1 ? "" : "s"}`);
-  if (a.ageDays != null) parts.push(`first ${when(a.first)} (${humanDays(a.ageDays)} ago)`);
-  if (a.quietDays != null) parts.push(`last ${when(a.last)} (${humanDays(a.quietDays)} ago)`);
+  const ago = (d) => (d < 1 ? "today" : `${humanDays(d)} ago`);
+  if (a.ageDays != null) parts.push(`first ${when(a.first)} (${ago(a.ageDays)})`);
+  if (a.quietDays != null) parts.push(`last ${when(a.last)} (${ago(a.quietDays)})`);
   parts.push(`${a.authors.length} author${a.authors.length === 1 ? "" : "s"}`);
   if (a.lineCount != null && !range) parts.push(`${a.lineCount} lines now`);
   L.push(parts.join(" · "), "");
