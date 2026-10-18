@@ -1,6 +1,6 @@
 # Security
 
-Report vulnerabilities through GitHub's [private vulnerability reporting](https://github.com/hexmillionaire/git-brief/security/advisories/new). Please don't open a public issue with exploit details.
+Report vulnerabilities through GitHub's [private vulnerability reporting](https://github.com/hexmillionaire/git-backstory/security/advisories/new). Please don't open a public issue with exploit details.
 
 ## What this tool does and doesn't do
 

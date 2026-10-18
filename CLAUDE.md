@@ -1,4 +1,4 @@
-# git-brief — agent notes
+# git-backstory — agent notes
 
 Zero-dependency Node CLI. Reads `git log`/`git blame` for one file and renders a short markdown brief. ESM, Node 18+.
 
@@ -8,7 +8,7 @@ Zero-dependency Node CLI. Reads `git log`/`git blame` for one file and renders a
 |---|---|
 | `npm test` | Unit tests (`test/analyze.test.js`) and CLI tests against a real temp git repo (`test/cli.test.js`) |
 | `npm run try` | Run the tool on its own `src/cli.js` |
-| `node bin/git-brief.js <path> --json` | See the raw facts when a section looks wrong |
+| `node bin/git-backstory.js <path> --json` | See the raw facts when a section looks wrong |
 
 **Before saying "done":** `npm test`, then run the tool on a real file in another repo and read the brief as a user would.
 

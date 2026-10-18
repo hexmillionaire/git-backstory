@@ -7,7 +7,7 @@ import { dirname, join } from "node:path";
 import { brief, parseArgs, splitTarget, UsageError } from "../src/cli.js";
 import { makeFixture } from "./fixture.js";
 
-const bin = join(dirname(fileURLToPath(import.meta.url)), "..", "bin", "git-brief.js");
+const bin = join(dirname(fileURLToPath(import.meta.url)), "..", "bin", "git-backstory.js");
 const { dir } = makeFixture();
 const exitCode = (args) => {
   try {
@@ -81,7 +81,7 @@ test("CLI: untracked path gives a readable brief, directory is refused", () => {
 test("works when the temp dir is reached through a symlink (macOS /var -> /private/var)", async () => {
   const { symlinkSync, mkdtempSync } = await import("node:fs");
   const { tmpdir } = await import("node:os");
-  const linkRoot = mkdtempSync(join(tmpdir(), "git-brief-link-"));
+  const linkRoot = mkdtempSync(join(tmpdir(), "git-backstory-link-"));
   const link = join(linkRoot, "repo");
   try {
     symlinkSync(dir, link, "dir");

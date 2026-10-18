@@ -32,6 +32,6 @@ jobs:
           package-manager-cache: false
       - run: npm test
       - name: Dogfood — brief this repo's own CLI
-        run: node bin/git-brief.js src/cli.js --no-links
+        run: node bin/git-backstory.js src/cli.js --no-links
       - name: Package contents
         run: npm pack --dry-run

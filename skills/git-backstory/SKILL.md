@@ -1,9 +1,9 @@
 ---
-name: git-brief
-description: Run a one-page git history brief on a file before changing it — reverts, fix bursts, reasons from commit bodies, files that change together. Use before editing any file with real history, when a task says "careful", or when a change you're about to make feels like it may have been tried before.
+name: git-backstory
+description: Run a one-page git backstory on a file before changing it — reverts, fix bursts, reasons from commit bodies, files that change together. Use before editing any file with real history, when a task says "careful", or when a change you are about to make feels like it may have been tried before.
 ---
 
-# git-brief
+# git-backstory
 
 A file's history says what not to do. This skill reads it in one command before you edit.
 
@@ -15,7 +15,7 @@ A file's history says what not to do. This skill reads it in one command before 
 
 ## Steps
 
-1. Run `npx -y git-brief <path>` (or `<path>:<from>-<to>` for a range). It needs git and Node 18+; nothing is installed into the repo.
+1. Run `npx -y git-backstory <path>` (or `<path>:<from>-<to>` for a range). It needs git and Node 18+; nothing is installed into the repo.
 2. Read **Be careful** first. If a revert is listed, open both commits (`git show <hash>`) and understand why before attempting anything similar. If there is a fix burst, assume the area is subtle.
 3. Read **Usually changes together with**. When you change this file, check each listed file for the same change, and mention the ones you deliberately left alone.
 4. Read **Reasons on record**. These are constraints the authors wrote down; treat them as requirements unless the user overrides them.

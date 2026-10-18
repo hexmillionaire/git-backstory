@@ -7,13 +7,13 @@ import { GitError, blame, fileLog, isTracked, lineCount, rangeLog, remoteWebUrl,
 
 const { version } = createRequire(import.meta.url)("../package.json");
 
-export const HELP = `git-brief ${version} — a history brief for one file, written for whoever has to change it next.
+export const HELP = `git-backstory ${version} — the backstory of a file, in one page, for whoever has to change it next.
 
 Usage
-  git-brief <path>              brief for a file
-  git-brief <path>:<line>       brief for one line
-  git-brief <path>:<from>-<to>  brief for a line range
-  git-brief <path> --json       the facts as JSON instead of markdown
+  git-backstory <path>              brief for a file
+  git-backstory <path>:<line>       brief for one line
+  git-backstory <path>:<from>-<to>  brief for a line range
+  git-backstory <path> --json       the facts as JSON instead of markdown
 
 Options
   --max <n>       commits to sample (default 200)
@@ -81,7 +81,7 @@ export function brief(targetArg, opts, cwd = process.cwd()) {
   let file = relative(root, abs).split(sep).join("/");
   if (!file || file.startsWith("..") || isAbsolute(file)) throw new UsageError(`${rawFile} is outside the repository at ${root}.`);
 
-  if (existsSync(abs) && statSync(abs).isDirectory()) throw new UsageError(`${rawFile} is a directory. git-brief works on one file.`);
+  if (existsSync(abs) && statSync(abs).isDirectory()) throw new UsageError(`${rawFile} is a directory. git-backstory works on one file.`);
   if (!isTracked(root, file) && !existsSync(abs)) {
     // Allow briefs on deleted files: the log still exists.
   }
@@ -120,7 +120,7 @@ export async function run(argv = process.argv.slice(2), io = { stdout: process.s
     return 0;
   } catch (e) {
     if (e instanceof UsageError || e instanceof GitError) {
-      io.stderr.write(`git-brief: ${e.message}\n`);
+      io.stderr.write(`git-backstory: ${e.message}\n`);
       return e.code ?? 2;
     }
     throw e;

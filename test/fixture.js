@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 export function makeFixture() {
-  const dir = mkdtempSync(join(tmpdir(), "git-brief-"));
+  const dir = mkdtempSync(join(tmpdir(), "git-backstory-"));
   const g = (...args) =>
     execFileSync("git", args, {
       cwd: dir,
