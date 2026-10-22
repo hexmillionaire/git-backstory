@@ -1,7 +1,47 @@
 // Thin, read-only wrapper around the git CLI. Every command here is a read:
 // log, blame, show, rev-parse, ls-files, remote. Nothing writes to the repo.
+//
+// The repository being read is untrusted input. A `.git/config` that arrives
+// in a zip, a tarball or a shared drive can name programs for git to run
+// (core.fsmonitor, core.hooksPath, diff.external, textconv drivers, pagers,
+// ssh and credential helpers). Every invocation below neutralises those
+// settings on the command line and scrubs GIT_* from the environment, so the
+// only thing this tool ever executes is `git` itself.
 
 import { spawnSync } from "node:child_process";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// A directory that does not exist: git finds no hooks there. Lives next to
+// this file, so the scanned repository cannot create it.
+const NO_HOOKS = join(dirname(fileURLToPath(import.meta.url)), "no-hooks");
+
+// `-c` overrides beat anything in the repository's own .git/config.
+const SAFE_CONFIG = [
+  ["core.quotepath", "off"],
+  ["log.showSignature", "false"],
+  ["color.ui", "never"],
+  ["core.pager", "cat"],
+  ["core.fsmonitor", "false"],
+  ["core.hooksPath", NO_HOOKS],
+  ["diff.external", ""],
+  ["core.sshCommand", ""],
+  ["core.gitProxy", ""],
+  ["core.askPass", ""],
+  ["credential.helper", ""],
+  ["protocol.allow", "never"],
+  ["gpg.program", ""],
+].flatMap(([k, v]) => ["-c", `${k}=${v}`]);
+
+/** Child environment: the user's PATH and locale, none of the GIT_* knobs. */
+export function safeEnv(base = process.env) {
+  const env = {};
+  for (const [k, v] of Object.entries(base)) if (!/^GIT_/i.test(k)) env[k] = v;
+  env.GIT_CONFIG_NOSYSTEM = "1";
+  env.GIT_TERMINAL_PROMPT = "0";
+  env.GIT_OPTIONAL_LOCKS = "0";
+  return env;
+}
 
 export class GitError extends Error {
   constructor(message, code = 1) {
@@ -12,11 +52,13 @@ export class GitError extends Error {
 }
 
 export function git(cwd, args, { allowFail = false } = {}) {
-  const r = spawnSync(
-    "git",
-    ["-c", "core.quotepath=off", "-c", "log.showSignature=false", "-c", "color.ui=never", ...args],
-    { cwd, encoding: "utf8", maxBuffer: 64 * 1024 * 1024, windowsHide: true },
-  );
+  const r = spawnSync("git", [...SAFE_CONFIG, ...args], {
+    cwd,
+    env: safeEnv(),
+    encoding: "utf8",
+    maxBuffer: 64 * 1024 * 1024,
+    windowsHide: true,
+  });
   if (r.error) {
     if (r.error.code === "ENOENT") throw new GitError("git is not installed or not on PATH.", 2);
     throw new GitError(r.error.message, 2);
@@ -114,7 +156,7 @@ function parseLog(out) {
 
 /** Blame summary: how many current lines each commit and each author owns. */
 export function blame(cwd, file, { start = null, end = null } = {}) {
-  const args = ["blame", "--line-porcelain"];
+  const args = ["blame", "--line-porcelain", "--no-textconv"];
   if (start != null) args.push("-L", `${start},${end ?? start}`);
   args.push("--", file);
   const out = git(cwd, args, { allowFail: true });

@@ -18,7 +18,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test test/analyze.test.js test/cli.test.js",
+    "test": "node --test test/analyze.test.js test/cli.test.js test/untrusted-repo.test.js",
     "try": "node bin/git-backstory.js src/cli.js"
   },
   "keywords": [
