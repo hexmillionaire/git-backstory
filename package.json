@@ -1,6 +1,6 @@
 {
   "name": "git-backstory",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The backstory of a file, in one page, for whoever has to change it next: reverts, fix bursts, reasons from commit bodies, co-changed files and owners, from git log and git blame. Zero dependencies.",
   "type": "module",
   "bin": {
